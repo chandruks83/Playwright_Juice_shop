@@ -1,6 +1,6 @@
 {
-    "email": "juice@shop5.com",
-    "password": "Juice@04",
+    "email": "user7@juice.com",
+    "password": "User7Pass",
     "passwordRepeat": "",
     "securityQuestion": { "id": 2 },
     "securityAnswer": ""

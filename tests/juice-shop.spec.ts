@@ -8,25 +8,19 @@ test.beforeEach("Login to juice shop", async ({loginPage})=>{
   console.log(await loginPage.verifyLoginSuccess())
 })
 
-// test.skip('can create a new review using the UI', async ({ loginPage }) => {
-//   const productName = "Apple Juice"
-//   const reviewComments = `Reviewed on ${Date.now()}`
-//   // await loginPage.locator('.item-name', {hasText:productName}).click()
-//   await page.getByRole("textbox", {name:"Text field to review a product"}).fill(reviewComments)
-//   await page.getByRole('button', {name:'Send the review'}).click()
-//   await page.getByText('Reviews').click()
-//   const comment = await page.getByText(reviewComments).innerText()
-//   expect(comment).toBe(reviewComments)
-// });
+test('create a new review', async ({page, productReview }) => {
+  const productName = "Apple Juice"
+  await productReview.submitAndVerifyProductReview(productName)
+});
 
 
-// test.skip('can create a new review using the API', async ({ page }) => {
-//   const userReg = new UserRegistration(page)
-//   userReg.registerNewUser()
-// });
+test.skip('User registration', async ({ page }) => {
+  const userReg = new UserRegistration(page)
+  await userReg.registerNewUser()
+});
 
 
-test("Verify empty basket", async({loginPage, basketPage, page})=>{
+test("Verify empty basket", async({basketPage})=>{
   await basketPage.openBasket()
   await expect(basketPage.basketButton).toHaveAttribute("tabindex", "0")
   await expect(basketPage.yourBasketHeading).toBeVisible()

@@ -10,7 +10,6 @@ export class ProductReview{
         await this.page.getByRole("textbox", {name:"Text field to review a product"}).fill(reviewComments)
         await this.page.getByRole('button', {name:'Send the review'}).click()
         await this.page.getByText('Reviews').click()
-        const comment = await this.page.getByText(reviewComments).innerText()
-        expect(comment).toBe(reviewComments)
+        await expect(this.page.getByText(reviewComments)).toBeVisible()
     }
 }

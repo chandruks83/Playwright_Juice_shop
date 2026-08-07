@@ -1,4 +1,4 @@
-import {Page} from '@playwright/test'
+import {expect, Page} from '@playwright/test'
 import newUser from '../fixtures/new-user.json'
 
 export class LoginPage{
@@ -22,13 +22,7 @@ export class LoginPage{
         await this.page.getByRole("button", {name:"Login", exact:true}).click()
     }
 
-    async verifyLoginSuccess(){
-        
-        if (await this.page.getByText("All Products").isVisible()){
-            return "Login success"
-        }
-        else if (await this.page.getByText("Invalid email or password.").isVisible()){
-            return "Login failed"
-        }
+    async verifyLoginSuccess(){   
+        await expect (this.page.getByText("All Products")).toBeVisible()
     }
 }

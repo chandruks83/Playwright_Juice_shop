@@ -1,11 +1,11 @@
 import {test as base} from '@playwright/test'
 import { LoginPage } from '../pages/login-page'
 import { BasketPage } from '../pages/basket-page'
-import { ProductReview} from '../pages/product-review-page'
+import { Products} from '../pages/products-page'
 type Fixtures={
     loginPage:LoginPage
     basketPage:BasketPage
-    productReview:ProductReview
+    products:Products
 }
 
 export const test = base.extend<Fixtures>({
@@ -19,8 +19,8 @@ export const test = base.extend<Fixtures>({
         await use(basketPage)
     },
 
-    productReview: async ({page}, use)=>{
-        const productReview = new ProductReview(page)
-        await use (productReview)
+    products: async ({page}, use)=>{
+        const products = new Products(page)
+        await use (products)
     }
 })

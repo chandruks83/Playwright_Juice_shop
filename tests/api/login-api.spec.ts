@@ -1,13 +1,14 @@
 import {expect} from '@playwright/test'
 import {test} from '../../fixtures/api-fixture'
-import { ApiTestConstants as data} from '../../test-data/test-constants'
 
 let token = ""
 test.beforeEach('Api login', async ({api})=>{
-    token = await api.login(data.statusCodes.requestSuccess)
+    token = await api.login()
+    
 })
 
-test('Verify empty basket', async ({basketApi: basketAPI})=>{
-    const basketDetails = await basketAPI.basketStatus(token)
+test('Verify empty basket', async ({basketApi})=>{
+    await basketApi.emptyBasket(token)
+    const basketDetails = await basketApi.basketStatus(token)
     expect(basketDetails.data.Products).toStrictEqual([])
 })

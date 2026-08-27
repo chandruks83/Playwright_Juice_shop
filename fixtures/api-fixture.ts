@@ -15,7 +15,7 @@ export const test = base.extend<ApiFixture>({
     },
 
     basketApi: async ({request}, use)=>{
-        const basketAPI = new BasketApi(request)
-        await use(basketAPI)
+        const basketApi = new BasketApi(request)
+        await use(basketApi)
     }
 })

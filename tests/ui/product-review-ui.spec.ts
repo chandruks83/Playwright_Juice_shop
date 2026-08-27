@@ -1,16 +1,14 @@
 import { expect } from '@playwright/test'
 import newUser from '../../fixtures/new-user.json'
-import { UserRegistration } from '../../pages/user-registration';
 import {test} from '../../fixtures/fixture'
 
 test.beforeEach("Login to juice shop", async ({loginPage})=>{
   await loginPage.login(newUser.email, newUser.password)
-  console.log(await loginPage.verifyLoginSuccess())
 })
 
-test('create a new review @smoke', async ({page, products: productReview }) => {
+test('create a new review @smoke', async ({products}) => {
   const productName = "Apple Juice"
-  await productReview.submitAndVerifyProductReview(productName)
+  await products.submitAndVerifyProductReview(productName)
 });
 
 

@@ -3,7 +3,7 @@ import {test} from '../../fixtures/api-fixture'
 
 let bearer = ""
 test.beforeEach("Login", async ({api})=>{
-    bearer = await api.login(200)
+    bearer = await api.login()
 })
 
 test("Add products to basket", async ({basketApi})=>{
@@ -15,7 +15,7 @@ test("Add products to basket", async ({basketApi})=>{
         const inputDetails = productIds.get(product.id)
         expect(inputDetails, `Unexpected product ID:${product.id}`).toBeDefined()
         const [expectedQuantity, expectedName] = inputDetails
-        expect(product.name).toContain(expectedQuantity)
-        expect(product.BasketItem.quantity).toEqual(expectedName)   
+        expect(product.name).toContain(expectedName)
+        expect(product.BasketItem.quantity).toEqual(expectedQuantity)   
     }
 })

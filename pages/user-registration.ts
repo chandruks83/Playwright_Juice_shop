@@ -11,10 +11,7 @@ export class UserRegistration{
         await this.page.locator('a', {hasText:"Me want it!"}).click()
         await this.page.locator('a', {hasText:"Not yet a customer"}).click()
         const uniqueEmail = `${Date.now()}@shop.com`
-        const password = "Juiceshop@1"
-        console.log(uniqueEmail);
-        console.log(password);
-        
+        const password = "Juiceshop@1"        
         
         await this.page.locator('#emailControl').fill(uniqueEmail)
         await this.page.locator('#passwordControl').fill(password)

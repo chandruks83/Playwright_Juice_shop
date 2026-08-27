@@ -15,8 +15,6 @@ export class LoginPage{
     async login(userName:string, password:string){
         await this.page.goto('/#/login')
         await this.handlePopups()
-        // await this.page.locator('#navbarAccount').click()
-        // await this.page.locator("[aria-label='Go to login page'][role='menuitem']").click()
         await this.page.getByRole("textbox", {name:"Text field for the login email"}).fill(userName)
         await this.page.locator('#password').fill(password)
         await this.page.getByRole("button", {name:"Login", exact:true}).click()

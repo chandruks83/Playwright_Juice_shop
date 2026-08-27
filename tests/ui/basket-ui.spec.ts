@@ -5,7 +5,6 @@ import {test} from '../../fixtures/fixture'
 
 test.beforeEach("Login to juice shop", async ({loginPage})=>{
   await loginPage.login(newUser.email, newUser.password)
-  console.log(await loginPage.verifyLoginSuccess())
 })
 
 test("Verify empty basket", async({basketPage})=>{

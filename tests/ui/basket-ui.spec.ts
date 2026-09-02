@@ -9,15 +9,17 @@ test.beforeEach("Login to juice shop", async ({loginPage})=>{
 
 test("Verify empty basket", async({basketPage})=>{
   await basketPage.openBasket()
-  await expect(basketPage.basketButton).toHaveAttribute("tabindex", "0")
-  await expect(basketPage.yourBasketHeading).toBeVisible()
-  await expect(basketPage.userInBasketHeading).toContainText(newUser.email)
-  await expect(basketPage.totalPrice).toHaveText("Total Price: 0¤")
-  await expect(basketPage.checkoutButton).toHaveAttribute("disabled", "true")
+  await basketPage.cleanupBasket()
+  await basketPage.verifyBasket([])
 })
 
 test("Add products to basket", async ({products, basketPage})=>{
   const basketList = ["Apple Juice", "Apple Pomace", "Banana Juice", "Lemon Juice"]
   await products.addProductsToBasket(basketList)
   await basketPage.verifyBasket(basketList)
+  await basketPage.cleanupBasket()
+})
+
+test.afterEach("cleanup", async({page})=>{
+  await page.close()
 })

@@ -25,6 +25,13 @@ export class BasketPage{
 
     async cleanupBasket(){
         await this.openBasket()
+        await this.page.waitForTimeout(100)
+        const products = await this.basketTable.locator('mat-row').all()
+        await this.page.pause()
+        if (products.length > 0){
+            for(const product of products)
+                await product.locator(".mat-column-remove button").click()
+        }
     }
 
     async verifyBasket(products:string[]){

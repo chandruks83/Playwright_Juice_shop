@@ -1,14 +1,15 @@
 import {expect} from '@playwright/test'
 import {test} from '../../fixtures/api-fixture'
 
-let token = ""
+let bearer = ""
+let basketId = 0
 test.beforeEach('Api login', async ({api})=>{
-    token = await api.login()
+    ({bearer, basketId} = await api.login())
     
 })
 
 test('Verify empty basket', async ({basketApi})=>{
-    await basketApi.emptyBasket(token)
-    const basketDetails = await basketApi.basketStatus(token)
+    await basketApi.emptyBasket(bearer, basketId)
+    const basketDetails = await basketApi.basketStatus(bearer, basketId)
     expect(basketDetails.data.Products).toStrictEqual([])
 })

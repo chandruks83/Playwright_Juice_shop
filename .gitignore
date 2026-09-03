@@ -6,3 +6,10 @@ node_modules/
 # Playwright
 /blob-report/
 /playwright/.auth/
+tests/test-1.spec.ts
+.gitignore
+.gitignore
+tests/test-api.spec.ts
+tests/test.spec.ts
+.DS_Store
+.gitignore

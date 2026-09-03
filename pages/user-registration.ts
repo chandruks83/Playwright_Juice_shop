@@ -22,17 +22,8 @@ export class UserRegistration{
 
         await list.getByRole("option", {name:" Name of your favorite pet? "}).click()
         await this.page.getByRole("textbox", {name:"Field for the answer to the security question"}).fill("fish")
-        await this.page.waitForTimeout(5000)
         this.page.getByRole("button", {name:"Button to complete the registration"}).click()
-        // const toastSuccessMsg = "Registration completed successfully. You can now log in."
-        // const snackBar = this.page.getByRole("status").filter({hasText:toastSuccessMsg})
-
-        // await Promise.all([
-        //     snackBar.waitFor({state:"visible",timeout:5000}),
-        //     this.page.getByRole("button", {name:"Button to complete the registration"}).click()
-        // ])
-        
-        // await expect(snackBar).toHaveText(toastSuccessMsg)
-        await this.page.waitForTimeout(5000)
+        const toastSuccessMsg = "Registration completed successfully. You can now log in."
+        await expect(this.page.getByText(toastSuccessMsg, {exact:false})).toBeVisible()
     }
 }

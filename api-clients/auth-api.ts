@@ -9,13 +9,12 @@ export class AuthApi {
     async login(){
         const loginResponse = await this.request.post('/rest/user/login', {data:
             {
-                "email": "1787118182516@shop.com",
+                "email": "1788432527078@shop.com",
                 "password": "Juiceshop@1"
             } 
         })
-        expect(loginResponse).toBeOK
+        await expect(loginResponse).toBeOK()
         const respJson = await loginResponse.json()
-        const authToken = respJson.authentication.token
-        return authToken
+        return {bearer:respJson.authentication.token, basketId:respJson.authentication.bid}
     }
 }

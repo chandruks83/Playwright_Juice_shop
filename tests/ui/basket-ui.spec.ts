@@ -14,11 +14,12 @@ test("Verify empty basket", async({basketPage})=>{
 
 test("Add products to basket", async ({products, basketPage})=>{
   const basketList = ["Apple Juice", "Apple Pomace", "Banana Juice", "Lemon Juice"]
+  await basketPage.cleanupBasket()
   await products.addProductsToBasket(basketList)
   await basketPage.verifyBasket(basketList)
   await basketPage.cleanupBasket()
 })
 
-test.afterEach("cleanup", async({page})=>{
+test.afterAll("cleanup", async({page})=>{
   await page.close()
 })

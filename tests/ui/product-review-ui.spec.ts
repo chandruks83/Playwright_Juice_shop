@@ -10,13 +10,3 @@ test('create a new review @smoke', async ({products}) => {
   const productName = "Apple Juice"
   await products.submitAndVerifyProductReview(productName)
 });
-
-
-test("Verify empty basket", async({basketPage})=>{
-  await basketPage.openBasket()
-  await expect(basketPage.basketButton).toHaveAttribute("tabindex", "0")
-  await expect(basketPage.yourBasketHeading).toBeVisible()
-  await expect(basketPage.userInBasketHeading).toContainText(newUser.email)
-  await expect(basketPage.totalPrice).toHaveText("Total Price: 0¤")
-  await expect(basketPage.checkoutButton).toHaveAttribute("disabled", "true")
-})

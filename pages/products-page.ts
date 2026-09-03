@@ -15,14 +15,15 @@ export class Products{
 
     async addProductsToBasket(products:string[]){
         if (products.length !== 0)
+            await this.page.getByRole("button", {name:"Back to homepage"}).click()
             {
             for(const product of products){
                 await this.page
                 .locator("mat-card")
                 .filter({has:this.page.locator(`img[alt*="${product}"]`)})
                 .getByRole("button", {name:"Add to Basket"}).click()
+                await expect(this.page.getByText(`Placed ${product}`, {exact:false})).toBeVisible()
             }
-            
         }
     }
 }

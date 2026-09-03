@@ -45,7 +45,7 @@ export class BasketPage{
         }
         else {
             const tableRows = this.page.locator('mat-table').locator('mat-row')
-            await expect(tableRows).toHaveCount(products.length, {timeout:5000})
+            await expect(tableRows).toHaveCount(products.length)
             for(const product of products){
                 await expect.soft(this.page.getByRole('cell', {name:`${product}`}).getByText(`${product}`)).toBeVisible()
             }

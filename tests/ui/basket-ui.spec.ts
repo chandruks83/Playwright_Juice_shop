@@ -19,7 +19,3 @@ test("Add products to basket", async ({products, basketPage})=>{
   await basketPage.verifyBasket(basketList)
   await basketPage.cleanupBasket()
 })
-
-test.afterAll("cleanup", async({page})=>{
-  await page.close()
-})

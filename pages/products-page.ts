@@ -22,6 +22,7 @@ export class Products{
                 .filter({has:this.page.locator(`img[alt*="${product}"]`)})
                 .getByRole("button", {name:"Add to Basket"}).click()
             }
+            
         }
     }
 }

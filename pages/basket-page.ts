@@ -24,13 +24,13 @@ export class BasketPage{
     }
 
     async cleanupBasket(){
-        await this.openBasket()
-        await this.page.waitForTimeout(100)
-        const products = await this.basketTable.locator('mat-row').all()
-        await this.page.pause()
-        if (products.length > 0){
-            for(const product of products)
-                await product.locator(".mat-column-remove button").click()
+        await this.openBasket()   
+        const products = this.basketTable.locator('mat-row')
+        let remainingRows = await products.count()
+        while (remainingRows > 0){
+            await products.first().locator(".mat-column-remove button").click()
+            remainingRows--
+            await expect(products).toHaveCount(remainingRows)
         }
     }
 
@@ -45,7 +45,7 @@ export class BasketPage{
         }
         else {
             const tableRows = this.page.locator('mat-table').locator('mat-row')
-            await expect(tableRows).toHaveCount(products.length)
+            await expect(tableRows).toHaveCount(products.length, {timeout:5000})
             for(const product of products){
                 await expect.soft(this.page.getByRole('cell', {name:`${product}`}).getByText(`${product}`)).toBeVisible()
             }

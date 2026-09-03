@@ -1,7 +1,6 @@
-import { expect } from '@playwright/test'
 import newUser from '../../fixtures/new-user.json'
-import { UserRegistration } from '../../pages/user-registration';
 import {test} from '../../fixtures/fixture'
+import { expect } from '@playwright/test'
 
 test.beforeEach("Login to juice shop", async ({loginPage})=>{
   await loginPage.login(newUser.email, newUser.password)

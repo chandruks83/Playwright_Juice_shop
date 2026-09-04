@@ -55,7 +55,7 @@ jobs:
 
       - name: Register UI test user
         run: |
-          node -e "const user = require('./fixtures/test-users.json').ui; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
+          node -e "const user = require('./test-data/user.json').ui; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
             curl --fail-with-body \
               --request POST \
               --header "Content-Type: application/json" \
@@ -64,7 +64,7 @@ jobs:
 
       - name: Register API test user
         run: |
-          node -e "const user = require('./fixtures/test-users.json').api; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
+          node -e "const user = require('./test-data/user.json').api; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
             curl --fail-with-body \
               --request POST \
               --header "Content-Type: application/json" \

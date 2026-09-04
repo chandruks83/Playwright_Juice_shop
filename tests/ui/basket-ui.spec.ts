@@ -1,9 +1,9 @@
-import newUser from '../../fixtures/new-user.json'
+import user from '../../test-data/user.json'
 import {test} from '../../fixtures/fixture'
 import { expect } from '@playwright/test'
 
 test.beforeEach("Login to juice shop", async ({loginPage})=>{
-  await loginPage.login(newUser.email, newUser.password)
+  await loginPage.login(user.ui.email, user.ui.password)
 })
 
 test("Verify empty basket", async({basketPage})=>{

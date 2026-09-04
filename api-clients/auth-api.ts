@@ -1,5 +1,5 @@
 import {APIRequestContext, expect} from '@playwright/test'
-
+import user from '../test-data/user.json'
 
 export class AuthApi {
     constructor (private request:APIRequestContext){
@@ -9,8 +9,8 @@ export class AuthApi {
     async login(){
         const loginResponse = await this.request.post('/rest/user/login', {data:
             {
-                "email": "1788432527078@shop.com",
-                "password": "Juiceshop@1"
+                "email": user.api.email,
+                "password": user.api.password
             } 
         })
         await expect(loginResponse).toBeOK()

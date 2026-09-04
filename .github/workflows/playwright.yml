@@ -53,9 +53,18 @@ jobs:
           echo "Juice Shop did not become ready" >&2
           exit 1
 
-      - name: Register CI test user
+      - name: Register UI test user
         run: |
-          node -e "const user = require('./fixtures/new-user.json'); user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
+          node -e "const user = require('./fixtures/test-users.json').ui; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
+            curl --fail-with-body \
+              --request POST \
+              --header "Content-Type: application/json" \
+              --data-binary @- \
+              http://localhost:3000/api/Users
+
+      - name: Register API test user
+        run: |
+          node -e "const user = require('./fixtures/test-users.json').api; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
             curl --fail-with-body \
               --request POST \
               --header "Content-Type: application/json" \

@@ -1,5 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
-import newUser from '../fixtures/new-user.json'
+import user from '../test-data/user.json'
 
 export class BasketPage{
 
@@ -39,7 +39,7 @@ export class BasketPage{
         if (products.length === 0){
             await expect(this.basketButton).toHaveAttribute("tabindex", "0")
             await expect(this.yourBasketHeading).toBeVisible()
-            await expect(this.userInBasketHeading).toContainText(newUser.email)
+            await expect(this.userInBasketHeading).toContainText(user.ui.email)
             await expect(this.totalPrice).toHaveText("Total Price: 0¤")
             await expect(this.checkoutButton).toHaveAttribute("disabled", "true")
         }

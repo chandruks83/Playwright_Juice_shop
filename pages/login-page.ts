@@ -1,5 +1,4 @@
 import {expect, Page} from '@playwright/test'
-import newUser from '../fixtures/new-user.json'
 
 export class LoginPage{
 

@@ -1,0 +1,85 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: user-setup
+  labels:
+    app: playwright-tests
+    component: user-setup
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 180
+  template:
+    metadata:
+      labels:
+        app: playwright-tests
+        component: user-setup
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: user-setup
+          image: chandruks83/playwright-juice-shop:1.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BASE_URL
+              value: http://juice-shop:3000
+          command: ["node", "-e"]
+          args:
+            - |
+              const users = require('./test-data/user.json');
+              const baseURL = process.env.BASE_URL;
+              const delay = milliseconds =>
+                new Promise(resolve => setTimeout(resolve, milliseconds));
+
+              async function waitForJuiceShop() {
+                for (let attempt = 1; attempt <= 30; attempt++) {
+                  try {
+                    const response = await fetch(baseURL);
+                    if (response.ok) {
+                      console.log('Juice Shop is ready');
+                      return;
+                    }
+                  } catch {}
+
+                  console.log(`Waiting for Juice Shop (${attempt}/30)`);
+                  await delay(2000);
+                }
+
+                throw new Error('Juice Shop did not become ready');
+              }
+
+              async function registerUser(name) {
+                const user = {
+                  ...users[name],
+                  passwordRepeat: users[name].password,
+                  securityAnswer: 'fish'
+                };
+
+                const response = await fetch(`${baseURL}/api/Users`, {
+                  method: 'POST',
+                  headers: { 'content-type': 'application/json' },
+                  body: JSON.stringify(user)
+                });
+
+                if (response.ok) {
+                  console.log(`${name} test user registered`);
+                  return;
+                }
+
+                if (response.status === 400) {
+                  console.log(`${name} test user already exists`);
+                  return;
+                }
+
+                throw new Error(
+                  `${name} user registration failed: ${response.status}`
+                );
+              }
+
+              (async () => {
+                await waitForJuiceShop();
+                await registerUser('api');
+                await registerUser('ui');
+              })().catch(error => {
+                console.error(error);
+                process.exit(1);
+              });

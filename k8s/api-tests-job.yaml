@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-tests
+  labels:
+    app: playwright-tests
+    component: api-tests
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        app: playwright-tests
+        component: api-tests
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: api-tests
+          image: chandruks83/playwright-juice-shop:1.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BASE_URL
+              value: http://juice-shop:3000
+            - name: CI
+              value: "true"
+          command:
+            - npx
+            - playwright
+            - test
+            - --project=api
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

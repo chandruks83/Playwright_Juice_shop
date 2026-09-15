@@ -1,0 +1,82 @@
+services:
+  juice-shop:
+    image: bkimminich/juice-shop:v13.2.0
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  user-setup:
+    build: .
+    depends_on:
+      juice-shop:
+        condition: service_healthy
+    environment:
+      BASE_URL: http://juice-shop:3000
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        node -e '
+          const users = require("./test-data/user.json");
+
+          Promise.all(["api", "ui"].map(async name => {
+            const user = {
+              ...users[name],
+              passwordRepeat: users[name].password,
+              securityAnswer: "fish"
+            };
+
+            const response = await fetch(
+              process.env.BASE_URL + "/api/Users",
+              {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify(user)
+              }
+            );
+
+            if (!response.ok && response.status !== 400) {
+              throw new Error(
+                name + " user registration failed: " + response.status
+              );
+            }
+
+            console.log(name + " test user is ready");
+          })).catch(error => {
+            console.error(error);
+            process.exit(1);
+          });
+        '
+
+  api-tests:
+    build: .
+    depends_on:
+      user-setup:
+        condition: service_completed_successfully
+    environment:
+      BASE_URL: http://juice-shop:3000
+      CI: "true"
+    command: ["npx", "playwright", "test", "--project=api"]
+    volumes:
+      - ./playwright-report/api:/app/playwright-report
+      - ./test-results/api:/app/test-results
+
+  ui-tests:
+    build: .
+    depends_on:
+      user-setup:
+        condition: service_completed_successfully
+    environment:
+      BASE_URL: http://juice-shop:3000
+      CI: "true"
+    command: ["npx", "playwright", "test", "--project=ui"]
+    volumes:
+      - ./playwright-report/ui:/app/playwright-report
+      - ./test-results/ui:/app/test-results

@@ -8,7 +8,7 @@ export class UserRegistration{
         await this.page.goto('/#/login')
         await this.page.locator('button', {hasText:'Dismiss'}).click()
         await this.page.locator('a', {hasText:"Me want it!"}).click()
-        await this.page.locator('a', {hasText:"Not yet a customer"}).click()
+        await this.page.getByRole('link', {name:"Not yet a customer"}).click()
         const uniqueEmail = `${Date.now()}@shop.com`
         const password = "Juiceshop@1"        
         
@@ -16,7 +16,8 @@ export class UserRegistration{
         await this.page.locator('#passwordControl').fill(password)
         await this.page.locator('#repeatPasswordControl').fill(password)
 
-        await this.page.getByRole("combobox", {name:"Selection list for the security question"}).click()
+        // await this.page.getByRole("combobox", {name:"Selection list for the security question"}).click()
+        await this.page.locator('.mat-select-arrow').click()
         const list = this.page.getByRole("listbox", {name:"Selection list for the security question"})
 
         await list.getByRole("option", {name:" Name of your favorite pet? "}).click()

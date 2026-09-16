@@ -11,8 +11,73 @@ permissions:
   contents: read
 
 jobs:
-  test:
-    name: Chromium
+  api-tests:
+    name: API tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      juice-shop:
+        image: bkimminich/juice-shop:v13.2.0
+        ports:
+          - 3000:3000
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for Juice Shop
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:3000 > /dev/null; then
+              echo "Juice Shop is ready"
+              exit 0
+            fi
+
+            echo "Waiting for Juice Shop (attempt ${attempt}/30)"
+            sleep 2
+          done
+
+          echo "Juice Shop did not become ready" >&2
+          exit 1
+
+      - name: Register API test user
+        run: |
+          node -e "const user = require('./test-data/user.json').api; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
+            curl --fail-with-body \
+              --request POST \
+              --header "Content-Type: application/json" \
+              --data-binary @- \
+              http://localhost:3000/api/Users
+
+      - name: Run API tests
+        run: npx playwright test --project=api
+        env:
+          CI: "true"
+          BASE_URL: http://localhost:3000
+
+      - name: Upload API Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: api-playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  ui-tests:
+    name: UI tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -62,25 +127,17 @@ jobs:
               --data-binary @- \
               http://localhost:3000/api/Users
 
-      - name: Register API test user
-        run: |
-          node -e "const user = require('./test-data/user.json').api; user.passwordRepeat = user.password; user.securityAnswer = 'fish'; process.stdout.write(JSON.stringify(user));" |
-            curl --fail-with-body \
-              --request POST \
-              --header "Content-Type: application/json" \
-              --data-binary @- \
-              http://localhost:3000/api/Users
-
-      - name: Run Playwright tests
-        run: npm test
+      - name: Run UI tests
+        run: npx playwright test --project=ui
         env:
           CI: "true"
+          BASE_URL: http://localhost:3000
 
-      - name: Upload Playwright report
+      - name: Upload UI Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v5
         with:
-          name: playwright-report
+          name: ui-playwright-report
           path: |
             playwright-report/
             test-results/
